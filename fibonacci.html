@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    const NUM = 35;
+
+    // https://github.com/eliovir/rust-examples/blob/master/fibonacci.rs
+    function runWasmFib(){
+      fetch("./fib.wasm").then(res => {
+        return res.arrayBuffer();
+      }).then(arrayBuf => {
+        return WebAssembly.instantiate(arrayBuf);
+      }).then(wasm => {
+        const fib = wasm.instance.exports.fib;
+        console.time("runWasmFib")
+        fib(NUM);
+        console.timeEnd("runWasmFib")
+      })
+    }
+
+    function runJsFib(){
+      function fibonacci (num) {
+        if (num <= 1) return 1
+
+        return fibonacci(num - 1) + fibonacci(num - 2)
+      }
+      
+      console.time("runJsFib")
+      fibonacci(NUM);
+      console.timeEnd("runJsFib")
+    }
+    
+    // runWasmFib();
+    runJsFib();
+  </script>
+</body>
+</html>
